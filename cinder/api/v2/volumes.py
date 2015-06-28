@@ -40,7 +40,10 @@ from cinder.volume import volume_types
 
 query_volume_filters_opt = cfg.ListOpt('query_volume_filters',
                                        default=['name', 'status', 'metadata',
-                                                'availability_zone'],
+                                                'availability_zone', 'source_volid',
+                                                'volume_type', 'consistencygroup_id',
+                                                'encrypted', 'multiattach',
+                                                'volume_type', 'bootable'],
                                        help="Volume filter options which "
                                             "non-admin user could use to "
                                             "query volumes. Default values "
