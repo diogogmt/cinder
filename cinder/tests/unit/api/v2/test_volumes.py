@@ -1604,7 +1604,77 @@ class VolumeApiTest(test.TestCase):
             ctxt, None, None,
             sort_keys=['created_at'], sort_dirs=['desc'],
             filters={'availability_zone': 'nova'}, viewable_admin_meta=True)
+        
+    @mock.patch('cinder.volume.api.API.get_all')
+    def test_get_volumes_filter_with_source_volid(self,get_all):
+        req = mock.MagicMock()
+        ctxt = context.RequestContext('fake', 'fake', auth_token=True)
+        req.environ = {'cinder.context': ctxt}
+        req.params = {'source_volid': '0a523623-138b-4d6c-bc61-67ad2f314fb3'}
+        self.controller._view_builder.detail_list = mock.Mock()
+        self.controller._get_volumes(req, True)
+        get_all.assert_called_once_with(
+            ctxt, None, None,
+            sort_keys=['created_at'], sort_dirs=['desc'],
+            filters={'source_volid': '0a523623-138b-4d6c-bc61-67ad2f314fb3'}, 
+            viewable_admin_meta=True)
 
+    @mock.patch('cinder.volume.api.API.get_all')
+    def test_get_volumes_filter_with_volume_type(self,get_all):
+        req = mock.MagicMock()
+        ctxt = context.RequestContext('fake', 'fake', auth_token=True)
+        req.environ = {'cinder.context': ctxt}
+        req.params = {'volume_type': 'lvmdriver-1'}
+        self.controller._view_builder.detail_list = mock.Mock()
+        self.controller._get_volumes(req, True)
+        get_all.assert_called_once_with(
+            ctxt, None, None,
+            sort_keys=['created_at'], sort_dirs=['desc'],
+            filters={'volume_type': 'lvmdriver-1'}, 
+            viewable_admin_meta=True)
+
+    @mock.patch('cinder.volume.api.API.get_all')
+    def test_get_volumes_filter_with_encrypted(self,get_all):
+        req = mock.MagicMock()
+        ctxt = context.RequestContext('fake', 'fake', auth_token=True)
+        req.environ = {'cinder.context': ctxt}
+        req.params = {'encrypted': 'False'}
+        self.controller._view_builder.detail_list = mock.Mock()
+        self.controller._get_volumes(req, True)
+        get_all.assert_called_once_with(
+            ctxt, None, None,
+            sort_keys=['created_at'], sort_dirs=['desc'],
+            filters={'encrypted': 'False'}, 
+            viewable_admin_meta=True)
+
+    @mock.patch('cinder.volume.api.API.get_all')
+    def test_get_volumes_filter_with_consistencygroup_id(self,get_all):
+        req = mock.MagicMock()
+        ctxt = context.RequestContext('fake', 'fake', auth_token=True)
+        req.environ = {'cinder.context': ctxt}
+        req.params = {'consistencygroup_id': '1'}
+        self.controller._view_builder.detail_list = mock.Mock()
+        self.controller._get_volumes(req, True)
+        get_all.assert_called_once_with(
+            ctxt, None, None,
+            sort_keys=['created_at'], sort_dirs=['desc'],
+            filters={'consistencygroup_id': '1'}, 
+            viewable_admin_meta=True)
+        
+    @mock.patch('cinder.volume.api.API.get_all')
+    def test_get_volumes_filter_with_multiattach(self,get_all):
+        req = mock.MagicMock()
+        ctxt = context.RequestContext('fake', 'fake', auth_token=True)
+        req.environ = {'cinder.context': ctxt}
+        req.params = {'multiattach': 'True'}
+        self.controller._view_builder.detail_list = mock.Mock()
+        self.controller._get_volumes(req, True)
+        get_all.assert_called_once_with(
+            ctxt, None, None,
+            sort_keys=['created_at'], sort_dirs=['desc'],
+            filters={'multiattach': 'True'}, 
+            viewable_admin_meta=True)
+                
     @mock.patch('cinder.volume.api.API.get_all')
     def test_get_volumes_filter_with_invalid_filter(self, get_all):
         req = mock.MagicMock()
